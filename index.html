@@ -1,12 +1,10 @@
 <html>
   <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="style.css">
 
     <script>
-      exapunks_files = [
-        "EXAPUNKS/solutions/trash-world-news-1.solution"
-      ]
-
+      exapunks_files = {}
       function deserialize_exapunks_solution ( solution_file_path, debug = false ) {
         $.ajax({
           url: solution_file_path,
@@ -70,22 +68,51 @@
             }
           },
           success: function(result) {
-            console.log("success")
-            console.log(result);
+            if ( debug ) console.log(result)
+            exapunks_files[solution_file_path] = result
           }
         })
-        return ""
       }
-      function dump_exapunks ( ) {
-        for ( var i = 0; i < exapunks_files.length; i++ ) {
-          var solution = deserialize_exapunks_solution( exapunks_files[i] )
-          console.log( solution )
-        }
+      function add_solution ( solution_name ) {
+        deserialize_exapunks_solution( "EXAPUNKS/solutions/" + solution_name + ".solution" )
+        $("#solutions").append(
+          "<div class='solution' id='" + solution_name + "'>" +
+            "<div class='cycles'></div>" +
+            "<div class='size'></div>" +
+            "<div class='activity'></div>" +
+            "<div class='exas'></div>" +
+          "</div>"
+        )
+      }
+      function update_info ( ) {
+        $(".solution").each(function() {
+          var solution_name = $(this).attr("id")
+          var solution_info = exapunks_files[ "EXAPUNKS/solutions/" + solution_name + ".solution" ]
+          $(this).find(".cycles").text( solution_info.statistic_cycles )
+          $(this).find(".size").text( solution_info.statistic_size )
+          $(this).find(".activity").text( solution_info.statistic_activity )
+          for ( var exa_name in solution_info.exas ) {
+            $(this).find(".exas").append(
+              "<div class='exa'>" +
+                "<div class='exa_name'>" + exa_name + "</div>" +
+                "<div class='exa_source_code'>" + solution_info.exas[exa_name].replace(/\n/g,'<br/>') + "</div>" +
+              "</div>"
+            )
+          }
+        })
       }
     </script>
   </head>
   <body>
-    Hello again~
-    <button onclick="dump_exapunks()">Dump EXAPUNKS</button>
+    <div id="solutions">
+      <script>
+        $(document).ready(function() {
+          add_solution("trash-world-news-1")
+          setTimeout(function() {
+            update_info()
+          }, 1000);
+        })
+      </script>
+    </div>
   </body>
 </html>
