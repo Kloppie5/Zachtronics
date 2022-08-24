@@ -25,7 +25,12 @@
               var cursor = 0
               var file_version = new Int32Array(bytes.buffer.slice(cursor, cursor + 4))[0]; cursor += 4
               if ( debug ) console.log("File Version: " + file_version)
+              var file_id_string_length = new Int32Array(bytes.buffer.slice(cursor, cursor + 4))[0]; cursor += 4
+              var file_id = String.fromCharCode.apply(null, new Uint8Array(bytes.buffer.slice(cursor, cursor + file_id_string_length))); cursor += file_id_string_length
+              if ( debug ) console.log("File ID: " + file_id)
 
+
+              console.log("Cursor at: " + cursor)
               return result;
             }
           },
