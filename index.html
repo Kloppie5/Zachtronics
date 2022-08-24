@@ -31,6 +31,18 @@
               var solution_name_string_length = new Int32Array(bytes.buffer.slice(cursor, cursor + 4))[0]; cursor += 4
               var solution_name = String.fromCharCode.apply(null, new Uint8Array(bytes.buffer.slice(cursor, cursor + solution_name_string_length))); cursor += solution_name_string_length
               if ( debug ) console.log("Solution Name: " + solution_name)
+              cursor += 4 // Unknown 0
+              cursor += 4 // Unknown 0
+              cursor += 4 // Statistic Count = 3
+              cursor += 4 // Statistic id 0
+              var statistic_cycles = new Int32Array(bytes.buffer.slice(cursor, cursor + 4))[0]; cursor += 4
+              if ( debug ) console.log("Statistic Cycles: " + statistic_cycles)
+              cursor += 4 // Statistic id 1
+              var statistic_size = new Int32Array(bytes.buffer.slice(cursor, cursor + 4))[0]; cursor += 4
+              if ( debug ) console.log("Statistic Size: " + statistic_size)
+              cursor += 4 // Statistic id 2
+              var statistic_activity = new Int32Array(bytes.buffer.slice(cursor, cursor + 4))[0]; cursor += 4
+              if ( debug ) console.log("Statistic Activity: " + statistic_activity)
 
               console.log("Cursor at: " + cursor)
               return result;
