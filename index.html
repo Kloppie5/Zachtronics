@@ -1,5 +1,43 @@
 <html>
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <script>
+      exapunks_files = [
+        "EXAPUNKS/solutions/trash-world-news-1.solution"
+      ]
+
+      function deserialize_exapunks_solution ( solution_file_path ) {
+        $.ajax({
+          url: solution_file_path,
+          accepts: {
+            exapunkssolution: 'application/x-some-custom-type'
+          },
+          dataType: 'exapunkssolution',
+          converters: {
+            'text exapunkssolution': function(result) {
+              console.log("convert")
+              console.log(result);
+              return result;
+            }
+          },
+          success: function(result) {
+            console.log("success")
+            console.log(result);
+          }
+        })
+        return ""
+      }
+      function dump_exapunks ( ) {
+        for ( var i = 0; i < exapunks_files.length; i++ ) {
+          var solution = deserialize_exapunks_solution( exapunks_files[i] )
+          console.log( solution )
+        }
+      }
+    </script>
+  </head>
   <body>
     Hello again~
+    <button onclick="dump_exapunks()">Dump EXAPUNKS</button>
   </body>
 </html>
