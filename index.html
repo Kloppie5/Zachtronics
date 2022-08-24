@@ -28,7 +28,9 @@
               var file_id_string_length = new Int32Array(bytes.buffer.slice(cursor, cursor + 4))[0]; cursor += 4
               var file_id = String.fromCharCode.apply(null, new Uint8Array(bytes.buffer.slice(cursor, cursor + file_id_string_length))); cursor += file_id_string_length
               if ( debug ) console.log("File ID: " + file_id)
-
+              var solution_name_string_length = new Int32Array(bytes.buffer.slice(cursor, cursor + 4))[0]; cursor += 4
+              var solution_name = String.fromCharCode.apply(null, new Uint8Array(bytes.buffer.slice(cursor, cursor + solution_name_string_length))); cursor += solution_name_string_length
+              if ( debug ) console.log("Solution Name: " + solution_name)
 
               console.log("Cursor at: " + cursor)
               return result;
