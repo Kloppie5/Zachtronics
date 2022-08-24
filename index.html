@@ -7,7 +7,7 @@
         "EXAPUNKS/solutions/trash-world-news-1.solution"
       ]
 
-      function deserialize_exapunks_solution ( solution_file_path, debug = true ) {
+      function deserialize_exapunks_solution ( solution_file_path, debug = false ) {
         $.ajax({
           url: solution_file_path,
           accepts: {
@@ -45,7 +45,7 @@
               if ( debug ) console.log("Statistic Activity: " + statistic_activity)
               var exa_count = new Int32Array(bytes.buffer.slice(cursor, cursor + 4))[0]; cursor += 4
               if ( debug ) console.log("Exa Count: " + exa_count)
-              var exas = []
+              var exas = {}
               for ( var i = 0 ; i < exa_count ; ++i ) {
                 var leading_byte = bytes[cursor]; cursor += 1
                 var exa_name_string_length = new Int32Array(bytes.buffer.slice(cursor, cursor + 4))[0]; cursor += 4
@@ -55,9 +55,18 @@
                 var exa_source_code = String.fromCharCode.apply(null, new Uint8Array(bytes.buffer.slice(cursor, cursor + exa_source_code_string_length))); cursor += exa_source_code_string_length
                 if ( debug ) console.log("Exa Source Code: " + exa_source_code)
                 cursor += 102 // 102 flags
+                exas[exa_name] = exa_source_code
               }
 
-              return result;
+              return {
+                file_version: file_version,
+                file_id: file_id,
+                solution_name: solution_name,
+                statistic_cycles: statistic_cycles,
+                statistic_size: statistic_size,
+                statistic_activity: statistic_activity,
+                exas: exas
+              }
             }
           },
           success: function(result) {
