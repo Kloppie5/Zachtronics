@@ -7,7 +7,7 @@
         "EXAPUNKS/solutions/trash-world-news-1.solution"
       ]
 
-      function deserialize_exapunks_solution ( solution_file_path ) {
+      function deserialize_exapunks_solution ( solution_file_path, debug = true ) {
         $.ajax({
           url: solution_file_path,
           accepts: {
@@ -16,8 +16,16 @@
           dataType: 'exapunkssolution',
           converters: {
             'text exapunkssolution': function(result) {
-              console.log("convert")
-              console.log(result);
+              var bytes = new Uint8Array(result.length)
+              for ( var i = 0; i < result.length; ++i ) {
+                bytes[i] = result.charCodeAt(i)
+              }
+              if ( debug ) console.log(bytes)
+
+              var cursor = 0
+              var file_version = new Int32Array(bytes.buffer.slice(cursor, cursor + 4))[0]; cursor += 4
+              if ( debug ) console.log("File Version: " + file_version)
+
               return result;
             }
           },
