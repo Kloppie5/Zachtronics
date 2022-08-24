@@ -17,7 +17,7 @@
           converters: {
             'text exapunkssolution': function(result) {
               var bytes = new Uint8Array(result.length)
-              for ( var i = 0; i < result.length; ++i ) {
+              for ( var i = 0 ; i < result.length ; ++i ) {
                 bytes[i] = result.charCodeAt(i)
               }
               if ( debug ) console.log(bytes)
@@ -43,8 +43,20 @@
               cursor += 4 // Statistic id 2
               var statistic_activity = new Int32Array(bytes.buffer.slice(cursor, cursor + 4))[0]; cursor += 4
               if ( debug ) console.log("Statistic Activity: " + statistic_activity)
+              var exa_count = new Int32Array(bytes.buffer.slice(cursor, cursor + 4))[0]; cursor += 4
+              if ( debug ) console.log("Exa Count: " + exa_count)
+              var exas = []
+              for ( var i = 0 ; i < exa_count ; ++i ) {
+                var leading_byte = bytes[cursor]; cursor += 1
+                var exa_name_string_length = new Int32Array(bytes.buffer.slice(cursor, cursor + 4))[0]; cursor += 4
+                var exa_name = String.fromCharCode.apply(null, new Uint8Array(bytes.buffer.slice(cursor, cursor + exa_name_string_length))); cursor += exa_name_string_length
+                if ( debug ) console.log("Exa Name: " + exa_name)
+                var exa_source_code_string_length = new Int32Array(bytes.buffer.slice(cursor, cursor + 4))[0]; cursor += 4
+                var exa_source_code = String.fromCharCode.apply(null, new Uint8Array(bytes.buffer.slice(cursor, cursor + exa_source_code_string_length))); cursor += exa_source_code_string_length
+                if ( debug ) console.log("Exa Source Code: " + exa_source_code)
+                cursor += 102 // 102 flags
+              }
 
-              console.log("Cursor at: " + cursor)
               return result;
             }
           },
