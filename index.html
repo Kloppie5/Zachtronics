@@ -7,7 +7,7 @@
       exapunks_files = {}
       function deserialize_exapunks_solution ( solution_file_path, debug = false ) {
         $.ajax({
-          url: solution_file_path,
+          url: encodeURIComponent(solution_file_path),
           accepts: {
             exapunkssolution: 'application/x-some-custom-type'
           },
@@ -50,6 +50,7 @@
                 var exa_name = String.fromCharCode.apply(null, new Uint8Array(bytes.buffer.slice(cursor, cursor + exa_name_string_length))); cursor += exa_name_string_length
                 if ( debug ) console.log("Exa Name: " + exa_name)
                 var exa_source_code_string_length = new Int32Array(bytes.buffer.slice(cursor, cursor + 4))[0]; cursor += 4
+                if ( debug ) console.log("Exa Source Code Length: " + exa_source_code_string_length)
                 var exa_source_code = String.fromCharCode.apply(null, new Uint8Array(bytes.buffer.slice(cursor, cursor + exa_source_code_string_length))); cursor += exa_source_code_string_length
                 if ( debug ) console.log("Exa Source Code: " + exa_source_code)
                 cursor += 102 // 102 flags
@@ -73,8 +74,8 @@
           }
         })
       }
-      function add_solution ( solution_name ) {
-        deserialize_exapunks_solution( "EXAPUNKS/solutions/" + solution_name + ".solution" )
+      function add_solution ( solution_name, debug = false ) {
+        deserialize_exapunks_solution("EXAPUNKS/solutions/" + solution_name + ".solution", debug)
         $("#solutions").append(
           "<div class='solution' id='" + solution_name + "'>" +
             "<div class='cycles'></div>" +
@@ -115,6 +116,7 @@
           add_solution("mitsuzen-hdi10-1")
           add_solution("last-stop-snaxnet-1")
           add_solution("zebros-copies-1")
+          add_solution("sfcta-highway-sign-#4902-1")
           setTimeout(function() {
             update_info()
           }, 1000);
